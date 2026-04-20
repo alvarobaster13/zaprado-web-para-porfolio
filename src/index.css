@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0A0A0A;
+  --color-surface: #141414;
+  --color-border-custom: #222222;
+  --color-accent-custom: #FF6900;
+  --color-text-main: #E5E5E5;
+  --color-text-dim: #888888;
+  
+  --font-serif: "Georgia", serif;
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  /* Map shadcn variables */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+@layer base {
+  :root {
+    --background: #0A0A0A;
+    --foreground: #E5E5E5;
+    --card: #141414;
+    --card-foreground: #E5E5E5;
+    --popover: #141414;
+    --popover-foreground: #E5E5E5;
+    --primary: #FF6900;
+    --primary-foreground: #FFFFFF;
+    --secondary: #222222;
+    --secondary-foreground: #E5E5E5;
+    --muted: #222222;
+    --muted-foreground: #888888;
+    --accent: #222222;
+    --accent-foreground: #FF6900;
+    --destructive: #FF4444;
+    --destructive-foreground: #FFFFFF;
+    --border: #222222;
+    --input: #222222;
+    --ring: #FF6900;
+    --radius: 0px;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-border rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground;
+}
+
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";

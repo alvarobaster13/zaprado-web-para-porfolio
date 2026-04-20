@@ -1,0 +1,6 @@
+{
+  "name": "Zaprado Support AI Triage",
+  "description": "Automatización de clasificación y registro de incidencias de pedidos para el equipo de soporte de Zaprado.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
