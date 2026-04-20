@@ -215,8 +215,8 @@ export default function SupportDashboard() {
       {/* Header */}
       <header className="bg-background border-b border-border sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-12">
-            <div className="text-2xl font-serif italic tracking-tight">Zaprado <span className="text-primary not-italic font-sans font-bold">Support</span></div>
+          <div className="flex items-center gap-4 md:gap-12">
+            <div className="text-xl md:text-2xl font-serif italic tracking-tight shrink-0">Zaprado <span className="text-primary not-italic font-sans font-bold">Support</span></div>
             <nav className="hidden md:flex items-center gap-8 text-xs font-bold uppercase tracking-widest text-muted-foreground">
               <button 
                 onClick={() => { setView('active'); setSelectedId(null); }}
@@ -251,10 +251,10 @@ export default function SupportDashboard() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-px bg-border">
+      <main className="max-w-7xl mx-auto p-0 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-px bg-border min-h-[calc(100vh-80px)]">
         {/* Left Column: Input & List */}
-        <div className="lg:col-span-4 space-y-px bg-border">
-            <div className="bg-background p-6 space-y-6">
+        <div className={`lg:col-span-4 space-y-px bg-border ${selectedId ? 'hidden lg:block' : 'block'}`}>
+            <div className="bg-background p-4 md:p-6 space-y-6 h-full">
               <div className="space-y-2">
                 <div className="font-serif italic text-sm text-primary">Caso Troncal</div>
                 <h3 className="text-xs font-bold uppercase tracking-widest text-foreground">Automatización de Devoluciones</h3>
@@ -362,26 +362,37 @@ export default function SupportDashboard() {
         </div>
 
         {/* Right Column: Detail View */}
-        <div className="lg:col-span-8 bg-background p-8">
+        <div className={`lg:col-span-8 bg-background p-4 md:p-8 ${!selectedId ? 'hidden lg:flex lg:items-center lg:justify-center' : 'block'}`}>
           <AnimatePresence mode="wait">
             {selectedIncident ? (
               <motion.div
                 key={selectedIncident.id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="space-y-12"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="space-y-8 md:space-y-12"
               >
+                {/* Mobile Back Button */}
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="lg:hidden -ml-2 text-muted-foreground hover:text-primary mb-4"
+                  onClick={() => setSelectedId(null)}
+                >
+                  <ArrowRight className="w-4 h-4 rotate-180 mr-2" />
+                  Back to List
+                </Button>
+
                 {/* Header Section */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-3">
-                    <span className="text-xs font-mono font-bold bg-primary text-primary-foreground px-2 py-0.5">{formatId(selectedIncident.id)}</span>
-                    <div className="font-serif italic text-primary text-sm">Extracción y Clasificación</div>
+                    <span className="text-[10px] md:text-xs font-mono font-bold bg-primary text-primary-foreground px-2 py-0.5">{formatId(selectedIncident.id)}</span>
+                    <div className="font-serif italic text-primary text-xs md:text-sm">Extracción y Clasificación</div>
                   </div>
-                  <h2 className="text-3xl font-light tracking-tight">Registro de Incidencia</h2>
+                  <h2 className="text-2xl md:text-3xl font-light tracking-tight">Registro de Incidencia</h2>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
                   <div className="space-y-1 border-b border-border pb-4">
                     <span className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground block">Customer</span>
                     <Input 
@@ -422,7 +433,7 @@ export default function SupportDashboard() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
                   <div className="space-y-8">
                     <div className="space-y-4">
                       <div className="space-y-1">
@@ -475,8 +486,8 @@ export default function SupportDashboard() {
                   </div>
                 </div>
 
-                <div className="flex justify-end gap-4 pt-12 border-t border-border">
-                  <div className="mr-auto text-[10px] text-muted-foreground font-mono flex items-center gap-4">
+                <div className="flex flex-col md:flex-row justify-end gap-4 pt-8 md:pt-12 border-t border-border">
+                  <div className="mr-auto text-[10px] text-muted-foreground font-mono flex flex-wrap items-center gap-x-4 gap-y-2 mb-4 md:mb-0">
                     <span>Agente: AI-Engine v2.4</span>
                     <span>Latencia: 142ms</span>
                     {selectedIncident.status === 'replied' && (
@@ -485,30 +496,32 @@ export default function SupportDashboard() {
                       </span>
                     )}
                   </div>
-                  {view === 'active' ? (
+                  <div className="flex gap-2 w-full md:w-auto">
+                    {view === 'active' ? (
+                      <Button 
+                        variant="ghost" 
+                        className="flex-1 md:flex-none text-[10px] uppercase font-bold tracking-widest hover:text-primary"
+                        onClick={() => handleArchive(selectedIncident.id)}
+                      >
+                        Archive
+                      </Button>
+                    ) : (
+                      <Button 
+                        variant="ghost" 
+                        className="flex-1 md:flex-none text-[10px] uppercase font-bold tracking-widest hover:text-primary"
+                        onClick={() => handleUnarchive(selectedIncident.id)}
+                      >
+                        Restore
+                      </Button>
+                    )}
                     <Button 
                       variant="ghost" 
-                      className="text-[10px] uppercase font-bold tracking-widest hover:text-primary"
-                      onClick={() => handleArchive(selectedIncident.id)}
+                      className="flex-1 md:flex-none text-[10px] uppercase font-bold tracking-widest hover:text-primary"
+                      onClick={() => handleEscalate(selectedIncident.id)}
                     >
-                      Archive
+                      Escalate
                     </Button>
-                  ) : (
-                    <Button 
-                      variant="ghost" 
-                      className="text-[10px] uppercase font-bold tracking-widest hover:text-primary"
-                      onClick={() => handleUnarchive(selectedIncident.id)}
-                    >
-                      Restore
-                    </Button>
-                  )}
-                  <Button 
-                    variant="ghost" 
-                    className="text-[10px] uppercase font-bold tracking-widest hover:text-primary"
-                    onClick={() => handleEscalate(selectedIncident.id)}
-                  >
-                    Escalate
-                  </Button>
+                  </div>
                 </div>
               </motion.div>
             ) : (
