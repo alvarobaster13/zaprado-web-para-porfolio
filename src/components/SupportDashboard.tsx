@@ -25,6 +25,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { ExtractedInfo, IncidentCategory } from '@/src/types';
+import { processIncident } from '@/src/lib/gemini';
 
 interface Incident extends ExtractedInfo {
   id: string;
@@ -138,19 +139,7 @@ export default function SupportDashboard() {
     
     setIsProcessing(true);
     try {
-      const response = await fetch('/api/triage', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text: newEmailText }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to process incident');
-      }
-
-      const result: ExtractedInfo = await response.json();
+      const result = await processIncident(newEmailText);
       const newIncident: Incident = {
         ...result,
         id: nextId.toString(),
@@ -164,9 +153,10 @@ export default function SupportDashboard() {
       setNewEmailText('');
       setSenderName('');
       setNextId(prev => prev + 1);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert("Hubo un error al procesar la incidencia. Por favor, inténtalo de nuevo.");
+      const errorMessage = error?.message || "Desconocido";
+      alert(`Hubo un error al procesar la incidencia: ${errorMessage}. Si persiste, comprueba la configuración de la clave de API.`);
     } finally {
       setIsProcessing(false);
     }
