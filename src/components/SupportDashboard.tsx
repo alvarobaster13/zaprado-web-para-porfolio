@@ -30,7 +30,7 @@ interface Incident extends ExtractedInfo {
   id: string;
   rawText: string;
   timestamp: Date;
-  status: 'pending' | 'processed' | 'replied';
+  status: 'pending' | 'processed' | 'replied' | 'escalated';
 }
 
 const CATEGORY_COLORS: Record<IncidentCategory, string> = {
@@ -150,9 +150,9 @@ export default function SupportDashboard() {
   const handleEscalate = (id: string) => {
     const setter = view === 'active' ? setIncidents : setArchivedIncidents;
     setter(prev => prev.map(i => 
-      i.id === id ? { ...i, category: 'Otro' as IncidentCategory, reason: `[ESCALADO] ${i.reason}` } : i
+      i.id === id ? { ...i, status: 'escalated' as const } : i
     ));
-    alert(`Incidencia ${id} escalada al equipo de gestión.`);
+    setSelectedId(null);
   };
 
   const handleResolve = (id: string) => {
@@ -264,6 +264,11 @@ export default function SupportDashboard() {
                                   <Badge variant="outline" className={`${CATEGORY_COLORS[incident.category]} border font-bold text-[9px] px-2 py-0 rounded-full`}>
                                     {incident.category.toUpperCase()}
                                   </Badge>
+                                  {incident.status === 'escalated' && (
+                                    <Badge className="bg-amber-500/20 text-amber-500 border-amber-500/30 font-bold text-[9px] px-2 py-0 rounded-full">
+                                      ESCALADO
+                                    </Badge>
+                                  )}
                                 </div>
                                 <span className="text-[9px] text-muted-foreground font-mono">
                                   {incident.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -425,6 +430,11 @@ export default function SupportDashboard() {
                         <CheckCircle2 className="w-3 h-3" /> RESOLVIDO
                       </span>
                     )}
+                    {selectedIncident.status === 'escalated' && (
+                      <span className="text-amber-500 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" /> ESCALADO
+                      </span>
+                    )}
                   </div>
                   <div className="flex gap-2 w-full md:w-auto">
                     {view === 'active' ? (
@@ -446,10 +456,11 @@ export default function SupportDashboard() {
                     )}
                     <Button 
                       variant="ghost" 
-                      className="flex-1 md:flex-none text-[10px] uppercase font-bold tracking-widest hover:text-primary"
+                      className={`flex-1 md:flex-none text-[10px] uppercase font-bold tracking-widest ${selectedIncident.status === 'escalated' ? 'text-amber-500 hover:text-amber-600' : 'hover:text-primary'}`}
                       onClick={() => handleEscalate(selectedIncident.id)}
+                      disabled={selectedIncident.status === 'escalated'}
                     >
-                      Escalate
+                      {selectedIncident.status === 'escalated' ? 'Escalated' : 'Escalate'}
                     </Button>
                   </div>
                 </div>
