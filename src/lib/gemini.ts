@@ -1,7 +1,23 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { ExtractedInfo } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+const getApiKey = () => {
+  try {
+    // Priority 1: VITE_ prefix for production/Vercel
+    const viteKey = (import.meta as any).env?.VITE_GEMINI_API_KEY;
+    if (viteKey) return viteKey;
+    
+    // Priority 2: Standard env for AI Studio preview
+    if (typeof process !== 'undefined' && process.env?.GEMINI_API_KEY) {
+      return process.env.GEMINI_API_KEY;
+    }
+  } catch (e) {
+    console.warn("Error resolving API Key", e);
+  }
+  return "";
+};
+
+const ai = new GoogleGenAI({ apiKey: getApiKey() });
 
 export async function processIncident(text: string): Promise<ExtractedInfo> {
   const response = await ai.models.generateContent({
