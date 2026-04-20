@@ -427,7 +427,7 @@ export default function SupportDashboard() {
                     <span>Latencia: 142ms</span>
                     {selectedIncident.status === 'replied' && (
                       <span className="text-green-500 flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3" /> RESOLVIDO
+                        <CheckCircle2 className="w-3 h-3" /> RESUELTO
                       </span>
                     )}
                     {selectedIncident.status === 'escalated' && (
