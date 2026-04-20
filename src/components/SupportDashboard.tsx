@@ -214,9 +214,9 @@ export default function SupportDashboard() {
     <div className="min-h-screen bg-background font-sans text-foreground">
       {/* Header */}
       <header className="bg-background border-b border-border sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4 md:gap-12">
-            <div className="text-xl md:text-2xl font-serif italic tracking-tight shrink-0">Zaprado <span className="text-primary not-italic font-sans font-bold">Support</span></div>
+        <div className="max-w-7xl mx-auto px-2 md:px-4 h-14 md:h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2 md:gap-8">
+            <div className="text-base md:text-xl font-serif italic tracking-tight shrink-0">Zaprado <span className="text-primary not-italic font-sans font-bold">Support</span></div>
             <nav className="hidden md:flex items-center gap-8 text-xs font-bold uppercase tracking-widest text-muted-foreground">
               <button 
                 onClick={() => { setView('active'); setSelectedId(null); }}
@@ -251,40 +251,37 @@ export default function SupportDashboard() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto p-0 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-px bg-border min-h-[calc(100vh-80px)]">
+      <main className="max-w-7xl mx-auto p-0 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-px bg-border">
         {/* Left Column: Input & List */}
         <div className={`lg:col-span-4 space-y-px bg-border ${selectedId ? 'hidden lg:block' : 'block'}`}>
-            <div className="bg-background p-4 md:p-6 space-y-6 h-full">
-              <div className="space-y-2">
-                <div className="font-serif italic text-sm text-primary">Caso Troncal</div>
-                <h3 className="text-xs font-bold uppercase tracking-widest text-foreground">Automatización de Devoluciones</h3>
-                <p className="text-[11px] text-muted-foreground leading-relaxed">
-                  Priorizando el mayor volumen y fricción. Extracción automática de ID y motivo con validación de integridad.
-                </p>
+            <div className="bg-background p-4 md:p-5 space-y-4 h-full">
+              <div className="space-y-1">
+                <div className="font-serif italic text-[11px] text-primary">Caso Troncal</div>
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-foreground">Automatización</h3>
               </div>
 
               <Card className="border-border bg-card shadow-none overflow-hidden rounded-none">
-                <CardHeader className="pb-4">
+                <CardHeader className="py-2 px-4 border-b border-border">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm font-bold uppercase tracking-widest">New Incident</CardTitle>
-                    <Mail className="w-4 h-4 text-muted-foreground" />
+                    <CardTitle className="text-[10px] font-bold uppercase tracking-widest">New Incident</CardTitle>
+                    <Mail className="w-3 h-3 text-muted-foreground" />
                   </div>
                 </CardHeader>
-                <CardContent className="p-4 space-y-4">
+                <CardContent className="p-3 space-y-3">
                   <Input 
-                    placeholder="Sender Name (Optional)"
-                    className="border-border bg-background text-foreground focus-visible:ring-primary"
+                    placeholder="Sender Name..."
+                    className="h-8 border-border bg-background text-foreground text-xs focus-visible:ring-primary"
                     value={senderName}
                     onChange={(e) => setSenderName(e.target.value)}
                   />
                   <Textarea 
                     placeholder="Paste email content..."
-                    className="min-h-[120px] resize-none border-border bg-background text-foreground font-serif focus-visible:ring-primary"
+                    className="min-h-[80px] resize-none border-border bg-background text-foreground text-xs font-serif focus-visible:ring-primary"
                     value={newEmailText}
                     onChange={(e) => setNewEmailText(e.target.value)}
                   />
                   <Button 
-                    className="w-full bg-primary hover:opacity-90 text-primary-foreground font-bold py-6 rounded-none uppercase tracking-widest text-xs"
+                    className="w-full bg-primary hover:opacity-90 text-primary-foreground font-bold py-4 rounded-none uppercase tracking-widest text-[10px]"
                     onClick={handleProcess}
                     disabled={isProcessing || !newEmailText.trim()}
                   >
@@ -309,7 +306,7 @@ export default function SupportDashboard() {
                   <Badge variant="outline" className="font-mono text-[9px] border-border text-muted-foreground">{filteredIncidents.length} Items</Badge>
                 </div>
                 
-                <ScrollArea className="h-[calc(100vh-550px)]">
+                <ScrollArea className="h-64 lg:h-[calc(100vh-450px)]">
                   <div className="space-y-2 pr-4">
                     <AnimatePresence mode="popLayout">
                       {filteredIncidents.length === 0 ? (
