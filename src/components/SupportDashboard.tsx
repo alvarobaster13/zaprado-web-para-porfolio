@@ -25,7 +25,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { ExtractedInfo, IncidentCategory } from '@/src/types';
-import { processIncident } from '@/src/lib/gemini';
 
 interface Incident extends ExtractedInfo {
   id: string;
@@ -126,41 +125,9 @@ export default function SupportDashboard() {
   const [archivedIncidents, setArchivedIncidents] = useState<Incident[]>([]);
   const [view, setView] = useState<'active' | 'archived'>('active');
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [newEmailText, setNewEmailText] = useState('');
-  const [senderName, setSenderName] = useState('');
-  const [nextId, setNextId] = useState(7);
   const [searchQuery, setSearchQuery] = useState('');
 
   const selectedIncident = incidents.find(i => i.id === selectedId);
-
-  const handleProcess = async () => {
-    if (!newEmailText.trim()) return;
-    
-    setIsProcessing(true);
-    try {
-      const result = await processIncident(newEmailText);
-      const newIncident: Incident = {
-        ...result,
-        id: nextId.toString(),
-        customerName: senderName || result.customerName,
-        rawText: newEmailText,
-        timestamp: new Date(),
-        status: 'pending'
-      };
-      setIncidents(prev => [newIncident, ...prev]);
-      setSelectedId(newIncident.id);
-      setNewEmailText('');
-      setSenderName('');
-      setNextId(prev => prev + 1);
-    } catch (error: any) {
-      console.error(error);
-      const errorMessage = error?.message || "Desconocido";
-      alert(`Hubo un error al procesar la incidencia: ${errorMessage}. Si persiste, comprueba la configuración de la clave de API.`);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
 
   const handleArchive = (id: string) => {
     const incidentToArchive = incidents.find(i => i.id === id);
@@ -258,58 +225,21 @@ export default function SupportDashboard() {
         {/* Left Column: Input & List */}
         <div className={`lg:col-span-4 space-y-px bg-border ${selectedId ? 'hidden lg:block' : 'block'}`}>
             <div className="bg-background p-4 md:p-5 space-y-4 h-full">
-              <div className="space-y-1">
+              <div className="space-y-1 pb-4 border-b border-border">
                 <div className="font-serif italic text-[11px] text-primary">Caso Troncal</div>
-                <h3 className="text-[10px] font-bold uppercase tracking-widest text-foreground">Automatización</h3>
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-foreground">Automatización de Incidencias</h3>
+                <p className="text-[10px] text-muted-foreground leading-relaxed mt-1">
+                  Gestionando el flujo de soporte inteligente para Zaprado.
+                </p>
               </div>
 
-              <Card className="border-border bg-card shadow-none overflow-hidden rounded-none">
-                <CardHeader className="py-2 px-4 border-b border-border">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-[10px] font-bold uppercase tracking-widest">New Incident</CardTitle>
-                    <Mail className="w-3 h-3 text-muted-foreground" />
-                  </div>
-                </CardHeader>
-                <CardContent className="p-3 space-y-3">
-                  <Input 
-                    placeholder="Sender Name..."
-                    className="h-8 border-border bg-background text-foreground text-xs focus-visible:ring-primary"
-                    value={senderName}
-                    onChange={(e) => setSenderName(e.target.value)}
-                  />
-                  <Textarea 
-                    placeholder="Paste email content..."
-                    className="min-h-[80px] resize-none border-border bg-background text-foreground text-xs font-serif focus-visible:ring-primary"
-                    value={newEmailText}
-                    onChange={(e) => setNewEmailText(e.target.value)}
-                  />
-                  <Button 
-                    className="w-full bg-primary hover:opacity-90 text-primary-foreground font-bold py-4 rounded-none uppercase tracking-widest text-[10px]"
-                    onClick={handleProcess}
-                    disabled={isProcessing || !newEmailText.trim()}
-                  >
-                    {isProcessing ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        <Plus className="mr-2 h-4 w-4" />
-                        Triage Incident
-                      </>
-                    )}
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <div className="space-y-4 pt-4">
+              <div className="space-y-4 pt-2">
                 <div className="flex items-center justify-between px-1">
                   <h3 className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground">Recent Activity</h3>
                   <Badge variant="outline" className="font-mono text-[9px] border-border text-muted-foreground">{filteredIncidents.length} Items</Badge>
                 </div>
                 
-                <ScrollArea className="h-64 lg:h-[calc(100vh-450px)]">
+                <ScrollArea className="h-[400px] lg:h-[calc(100vh-180px)]">
                   <div className="space-y-2 pr-4">
                     <AnimatePresence mode="popLayout">
                       {filteredIncidents.length === 0 ? (
